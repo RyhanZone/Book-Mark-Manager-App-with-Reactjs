@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+:root {
+  /* Natural Light Mood */
+  --n-l-0: #ffffff;
+  --n-l-100: #e8f0ef;
+  --n-l-300: #dde9e7;
+  --n-l-400: #COCFCC;
+  --n-l-500: #899492;
+  --n-l-800: #4c5c59;
+  --n-l-900: #051513;
+
+  /* Natural Dark Mood */
+  --n-d-0: #ffffff;
+  --n-d-100: #b1b9b9;
+  --n-d-300: #00706e;
+  --n-d-400: #004746;
+  --n-d-500: #004241;
+  --n-d-600: #002e2d;
+  --n-d-800: #001f1f;
+  --n-d-900: #001414;
+
+  /* Teal */
+  --t-700: #014745;
+  --t-800: #013c3b;
+
+  /* Red */
+  --r-600: #fd4740;
+  --r-800: #cb0a04;
+
+  /* Spacing Tokens */
+  --spacing-0: 0px;
+  --spacing-025: 2px;
+  --spacing-050: 4px;
+  --spacing-075: 6px;
+  --spacing-100: 8px;
+  --spacing-125: 10px;
+  --spacing-150: 12px;
+  --spacing-200: 16px;
+  --spacing-250: 20px;
+  --spacing-300: 24px;
+  --spacing-400: 32px;
+  --spacing-500: 40px;
+  --spacing-600: 48px;
+  --spacing-800: 64px;
+  --spacing-1000: 80px;
+  --spacing-1200: 96px;
+  --spacing-1400: 112px;
+  --spacing-1600: 128px;
+  --spacing-1800: 140px;
+
+  /* Border Radius Tokens */
+  --b-r-0: 0px;
+  --b-r-4: 4px;
+  --b-r-6: 6px;
+  --b-r-8: 8px;
+  --b-r-10: 10px;
+  --b-r-12: 12px;
+  --b-r-16: 16px;
+  --b-r-20: 20px;
+  --b-r-24: 24px;
+  --b-r-full: 999px;
+}
+@layer base {
+  body {
+    font-family: "Manrope", sans-serif;
+  }
+}
+@layer components {
+  /* Text Preset 1 - Manrope Bold */
+  .t-p-1 {
+    font-size: 24px;
+    line-height: 140%;
+    font-weight: 700;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 2 - Manrope Bold */
+  .t-p-2 {
+    font-size: 20px;
+    line-height: 120%;
+    font-weight: 700;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 2 SemiBold */
+  .t-p-2-semibold {
+    font-size: 20px;
+    line-height: 120%;
+    font-weight: 600;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 3 - Manrope SemiBold */
+  .t-p-3 {
+    font-size: 16px;
+    line-height: 140%;
+    font-weight: 600;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 3 Medium */
+  .t-p-3-medium {
+    font-size: 16px;
+    line-height: 130%;
+    font-weight: 500;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 4 - Manrope SemiBold */
+  .t-p-4 {
+    font-size: 14px;
+    line-height: 140%;
+    font-weight: 600;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 4 Medium */
+  .t-p-4-medium {
+    font-size: 14px;
+    line-height: 150%;
+    font-weight: 500;
+    letter-spacing: 0px;
+  }
+
+  /* Text Preset 5 - Manrope Medium */
+  .t-p-5 {
+    font-size: 12px;
+    line-height: 140%;
+    font-weight: 500;
+    letter-spacing: 0px;
+  }
+}
