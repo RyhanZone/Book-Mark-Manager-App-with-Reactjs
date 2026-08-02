@@ -37,7 +37,8 @@ export default function TextAreaFilds() {
             focus:outline-none
             focus:ring-2
             transition-all
-            bg-[var(--n-l-0)]
+            duration-500
+            bg-(--n-l-0)
             dark:bg-[var(--n-d-600)]
             ${
               isLimitReached
