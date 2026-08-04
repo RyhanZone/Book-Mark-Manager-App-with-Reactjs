@@ -1,0 +1,20 @@
+const tags = [
+  { id: 1, name: "Ai", count: 0 },
+  { id: 2, name: "Community", count: 0 },
+  { id: 3, name: "Compatibility", count: 0 },
+  { id: 4, name: "CSS", count: 0 },
+  { id: 5, name: "Design", count: 0 },
+  { id: 6, name: "Framework", count: 0 },
+  { id: 7, name: "Git", count: 0 },
+  { id: 8, name: "HTML", count: 0 },
+  { id: 9, name: "Javascript", count: 0 },
+  { id: 10, name: "Layout", count: 0 },
+  { id: 11, name: "Learning", count: 0 },
+  { id: 12, name: "Performance", count: 0 },
+  { id: 13, name: "Practice", count: 0 },
+  { id: 14, name: "Reference", count: 0 },
+  { id: 15, name: "Tips", count: 0 },
+  { id: 16, name: "Tool", count: 0 },
+  { id: 17, name: "Tutorial", count: 0 },
+];
+export default tags;
