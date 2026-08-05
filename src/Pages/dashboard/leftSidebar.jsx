@@ -2,14 +2,14 @@ import Logo from "../../assets/Logo.png";
 import LogoDark from "../../assets/Logo-dark.png";
 import tags from "../../Data/data";
 
-export default function LeftSidebar() {
+export default function LeftSidebar({HomeActive , setIsHomeActive}) {
   return (
     <div className="2xl:w-[15%] xl:w-[18%] lg:w-[20%] min-h-screen h-full bg-[var(--n-l-0)] dark:bg-[var(--n-d-800)] flex flex-col gap-[var(--spacing-500)] px-[var(--spacing-200)] py-[var(--spacing-200)]">
       <img className="w-[214px] dark:hidden" src={Logo} alt="" />
       <img className="w-[214px] hidden dark:block" src={LogoDark} alt="" />
       <div className="flex flex-col gap-[var(--spacing-200)] ">
         <div className="">
-          <div className="flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)]">
+          <div onClick={() => !HomeActive && setIsHomeActive(true)} className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${HomeActive ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]" : ""} hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)]`}>
             <svg
               className="text-[var(--n-l-800)] dark:text-[var(--n-d-100)]"
               xmlns="http://www.w3.org/2000/svg"
@@ -28,7 +28,7 @@ export default function LeftSidebar() {
             </svg>
             <p className="t-p-3 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">Home</p>
           </div>
-          <div className="flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)]">
+          <div onClick={() => HomeActive && setIsHomeActive(false)} className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${!HomeActive ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]" : ""} hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)]`}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
