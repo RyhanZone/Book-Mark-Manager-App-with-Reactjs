@@ -1,13 +1,13 @@
 import AddBookmarkButton from "../../../Components/Buttons/AddBookmarkButton";
 import ProfilePic from "../../../assets/Avatar.png"
-export default function Header() {
+export default function Header({MenuOpen, setMenuOpen}) {
   return (
     <div className="flex justify-between w-full px-[var(--spacing-400)] py-[var(--spacing-200)] bg-[var(--n-l-0)] dark:bg-[var(--n-d-800)]">
       <div className="flex gap-[var(--spacing-200)]">
-        <div className="hidden w-[44px] h-[44px] rounded-[var(--b-r-8)] border border-[var(--n-l-400)] dark:border-[var(--n-d-400)] flex justify-center items-center">
+        <div onClick={() => {MenuOpen ? setMenuOpen(false) : setMenuOpen(true)}} className="mobile:flex tablet:flex desktop:hidden w-[44px] h-[44px] rounded-[var(--b-r-8)] border border-[var(--n-l-400)] dark:border-[var(--n-d-400)] flex justify-center items-center">
           <i className="bi bi-list text-[20px] text-[var(--n-l-100)] dark:text-[var(--n-d-0)]"></i>
         </div>
-        <div className="relative w-[320px] flex">
+        <div className="relative w-[320px] mobile:w-[193px] tablet:w-[250px] flex">
           <i className="bi bi-search absolute left-[var(--spacing-150)] top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]"></i>
 
           <input
