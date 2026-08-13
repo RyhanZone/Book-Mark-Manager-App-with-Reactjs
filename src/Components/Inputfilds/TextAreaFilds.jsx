@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function TextAreaFilds() {
+export default function TextAreaFilds({labeltxt}) {
   const [text, setText] = useState("");
 
   const charCount = text.length;
@@ -19,26 +19,27 @@ export default function TextAreaFilds() {
     <div className="flex flex-col gap-[var(--spacing-075)]">
       <div className="flex flex-col gap-[var(--spacing-075)]">
         <label className="t-p-4 text-[var(--n-l-900)] dark:text-[var(--n-d-0)]">
-          URL *
+          {labeltxt}
         </label>
 
         <textarea
           value={text}
-          placeholder="Search"
+          // placeholder="Search"
           onChange={handleChange}
           className={`
+            h-[91px]
             text-[var(--n-l-800)]
             dark:text-[var(--n-d-100)]
             hover:bg-[var(--n-l-100)]
             dark:hover:bg-[var(--n-d-500)]
-            border 
+            border
             p-[var(--spacing-150)]
             rounded-[var(--b-r-8)]
             focus:outline-none
             focus:ring-2
             transition-all
             duration-500
-            bg-(--n-l-0)
+            bg-[var(--n-l-0)]
             dark:bg-[var(--n-d-600)]
             ${
               isLimitReached
@@ -51,9 +52,7 @@ export default function TextAreaFilds() {
       </div>
 
       <div className="text-[var(--n-l-800)] dark:text-[var(--n-d-100)] flex justify-between">
-        <p className="t-p-4-medium">
-          This is a hint text to help user.
-        </p>
+        <p className="t-p-4-medium"></p>
 
         <p className={`t-p-5 ${isLimitReached && "text-[var(--r-600)]"}`}>
           {charCount}/280

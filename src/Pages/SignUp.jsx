@@ -2,7 +2,7 @@ import Logo from "../assets/Logo.png";
 import LogoDark from "../assets/Logo-dark.png";
 import PrimaryButton from "../Components/Buttons/PrimaryButton";
 import InputFild from "../Components/Inputfilds/InputFild";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 export default function SignUp() {
   return (
     <div className="min-h-screen sm:p-[var(--spacing-200)] p-[var(--spacing-200)] w-full bg-[var(--n-l-100)] dark:bg-[var(--n-d-900)] flex justify-center items-center">
@@ -28,8 +28,11 @@ export default function SignUp() {
             <p className="t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
               Already have an account?
             </p>
-            <Link to="/login" className="t-p-4 text-[var(--n-l-900)]  hover:text-[var(--n-l-800)] hover:t-p-4-medium  dark:text-[var(--n-d-0)] hover:t-p-4 dark:hover:text-[var(--n-d-100)] transition-all duration-500 hover:cursor-pointer">
-                Log in
+            <Link
+              to="/login"
+              className="t-p-4 text-[var(--n-l-900)]  hover:text-[var(--n-l-800)] hover:t-p-4-medium  dark:text-[var(--n-d-0)] hover:t-p-4 dark:hover:text-[var(--n-d-100)] transition-all duration-500 hover:cursor-pointer"
+            >
+              Log in
             </Link>
           </div>
         </div>

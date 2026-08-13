@@ -10,11 +10,13 @@ export default function LeftSidebar({
 }) {
   return (
     <div
-      className={`${MenuOpen ? "absolute flex z-50 left-0 w-full" : "mobile:hidden tablet:hidden desktop:flex w-auto"}`}
+      className={`${
+        MenuOpen
+          ? "absolute flex z-50 left-0 w-full h-full"
+          : "mobile:hidden tablet:hidden desktop:flex w-auto desktop:h-full"
+      }`}
     >
-      <div
-        className={`flex flex-col gap-[var(--spacing-200] min-w-[280px] min-h-screen bg-[var(--n-l-0)] dark:bg-[var(--n-d-800)] flex-col gap-[var(--spacing-500)] px-[var(--spacing-200)] py-[var(--spacing-200)]`}
-      >
+      <div className="flex flex-col gap-[var(--spacing-500)] min-w-[280px] h-full overflow-y-auto bg-[var(--n-l-0)] dark:bg-[var(--n-d-800)] px-[var(--spacing-200)] py-[var(--spacing-200)]">
         <div className="flex justify-between">
           <img className="w-[214px] dark:hidden" src={Logo} alt="" />
           <img className="w-[214px] hidden dark:block" src={LogoDark} alt="" />
@@ -29,7 +31,11 @@ export default function LeftSidebar({
           <div className="">
             <div
               onClick={() => !HomeActive && setIsHomeActive(true)}
-              className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${HomeActive ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]" : ""} hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)]`}
+              className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${
+                HomeActive
+                  ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]"
+                  : ""
+              } hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)] cursor-pointer`}
             >
               <svg
                 className="text-[var(--n-l-800)] dark:text-[var(--n-d-100)]"
@@ -53,7 +59,11 @@ export default function LeftSidebar({
             </div>
             <div
               onClick={() => HomeActive && setIsHomeActive(false)}
-              className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${!HomeActive ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]" : ""} hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)]`}
+              className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${
+                !HomeActive
+                  ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]"
+                  : ""
+              } hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)] cursor-pointer`}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -89,7 +99,7 @@ export default function LeftSidebar({
                   >
                     <div className="flex gap-[var(--spacing-100)] items-center">
                       <input
-                        className="h-4 w-4 border border-[var(--n-l-500)] dark:border-[var(--n-l-300)] dark:accent-amber-300 darbg-amber-800 checked:bg-[var(--t-700)] checked:border-[var(--t-700)] cursor-pointer"
+                        className="h-4 w-4 border border-[var(--n-l-500)] dark:border-[var(--n-l-300)] dark:accent-amber-300 checked:bg-[var(--t-700)] checked:border-[var(--t-700)] cursor-pointer"
                         type="checkbox"
                         id={`tag-${item.id}`}
                       />
@@ -112,12 +122,12 @@ export default function LeftSidebar({
           </div>
         </div>
       </div>
-      <div
-        onClick={() => {
-          !MenuOpen ? setMenuOpen(true) : setMenuOpen(false);
-        }}
-        className="w-full min-h-screen bg-[#131313B2]"
-      ></div>
+      {MenuOpen && (
+        <div
+          onClick={() => setMenuOpen(false)}
+          className="w-full h-full bg-[#131313B2]"
+        ></div>
+      )}
     </div>
   );
 }

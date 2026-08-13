@@ -2,7 +2,7 @@ import Logo from "../assets/Logo.png";
 import LogoDark from "../assets/Logo-dark.png";
 import PrimaryButton from "../Components/Buttons/PrimaryButton";
 import InputFild from "../Components/Inputfilds/InputFild";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 export default function Login() {
   return (
     <div className="min-h-screen sm:p-[var(--spacing-200)] p-[var(--spacing-200)] w-full bg-[var(--n-l-100)] dark:bg-[var(--n-d-900)] flex justify-center items-center">
@@ -23,14 +23,28 @@ export default function Login() {
           <PrimaryButton text="Login" />
         </form>
         <div className="flex flex-col gap-[var(--spacing-200)] justify-center items-center">
-            <div className="flex gap-[var(--spacing-075)]">
-                <p className="t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">Forgot password?</p>
-                <Link to="/forgot-password" className="t-p-4 text-[var(--n-l-900)]  hover:text-[var(--n-l-800)] hover:t-p-4-medium  dark:text-[var(--n-d-0)] hover:t-p-4 dark:hover:text-[var(--n-d-100)] transition-all duration-500 hover:cursor-pointer">Reset it</Link>
-            </div>
-            <div className="flex gap-[var(--spacing-075)]">
-                <p className="t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">Don’t have an account?</p>
-                <Link to="/signup" className="t-p-4 text-[var(--n-l-900)] hover:text-[var(--n-l-800)] hover:t-p-4-medium dark:text-[var(--n-d-0)] hover:t-p-4 dark:hover:text-[var(--n-d-100)] transition-all duration-500 hover:cursor-pointer">Sign up</Link>
-            </div>
+          <div className="flex gap-[var(--spacing-075)]">
+            <p className="t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+              Forgot password?
+            </p>
+            <Link
+              to="/forgot-password"
+              className="t-p-4 text-[var(--n-l-900)]  hover:text-[var(--n-l-800)] hover:t-p-4-medium  dark:text-[var(--n-d-0)] hover:t-p-4 dark:hover:text-[var(--n-d-100)] transition-all duration-500 hover:cursor-pointer"
+            >
+              Reset it
+            </Link>
+          </div>
+          <div className="flex gap-[var(--spacing-075)]">
+            <p className="t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+              Don't have an account?
+            </p>
+            <Link
+              to="/signup"
+              className="t-p-4 text-[var(--n-l-900)] hover:text-[var(--n-l-800)] hover:t-p-4-medium dark:text-[var(--n-d-0)] hover:t-p-4 dark:hover:text-[var(--n-d-100)] transition-all duration-500 hover:cursor-pointer"
+            >
+              Sign up
+            </Link>
+          </div>
         </div>
       </div>
     </div>
