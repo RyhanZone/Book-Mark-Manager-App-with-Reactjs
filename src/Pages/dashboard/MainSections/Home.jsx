@@ -1,8 +1,10 @@
 import { useState } from "react";
 import BookMarksCard from "../../../Components/BookMraksCards/BookMarksCard";
-import { bookmarks } from "../../../Data/data";
-export default function Home() {
+export default function Home({bookmarks, setBookmarks}) {
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
+  let shortbookmarks = {
+    for()
+  }
   return (
     <div className="h-full overflow-y-scroll pt-[var(--spacing-400)] px-[var(--spacing-400)] pb-[var(--spacing-400)]">
       <div className="w-full flex justify-between">
@@ -57,7 +59,7 @@ export default function Home() {
         {bookmarks.map((bookmark) => {
           return (
             <BookMarksCard
-              key={bookmark.id}
+              id={bookmark.id}
               cardTitle={bookmark.title}
               cardUrl={bookmark.url}
               cardDescription={bookmark.description}
@@ -65,6 +67,8 @@ export default function Home() {
               cardViews={bookmark.views}
               cardCDate={bookmark.createdAt}
               cardLVDate={bookmark.cardLVDate}
+              bookmarks={bookmarks}
+              setBookmarks={setBookmarks}
             />
           );
         })}

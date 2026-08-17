@@ -23,7 +23,6 @@ export const bookmarks = [
     id: 1,
     title: "Frontend Mentor",
     url: "frontendmentor.io",
-    favicon: "/assets/frontend-mentor.png",
     description:
       "Improve your front-end coding skills by building real-world HTML, CSS and JavaScript challenges whilst working to professional designs.",
     tags: ["Practice", "Learning", "Community"],
@@ -38,7 +37,6 @@ export const bookmarks = [
     id: 2,
     title: "MDN Web Docs",
     url: "developer.mozilla.org",
-    favicon: "/assets/mdn.png",
     description:
       "The MDN Web Docs site provides information about Open Web technologies including HTML, CSS, and APIs for both Web sites and progressive web apps.",
     tags: ["Reference", "HTML", "CSS", "JavaScript"],
@@ -53,7 +51,6 @@ export const bookmarks = [
     id: 3,
     title: "React Docs",
     url: "react.dev",
-    favicon: "/assets/react.png",
     description:
       "The library for web and native user interfaces. Build user interfaces out of individual pieces called components.",
     tags: ["JavaScript", "Framework", "Reference"],
@@ -68,7 +65,6 @@ export const bookmarks = [
     id: 4,
     title: "Claude",
     url: "claude.ai",
-    favicon: "/assets/claude.png",
     description:
       "An AI assistant created by Anthropic that can help with analysis, writing, coding, math, and creative tasks through natural conversation.",
     tags: ["Tools", "AI", "Learning"],
@@ -83,7 +79,6 @@ export const bookmarks = [
     id: 5,
     title: "Web.dev",
     url: "web.dev",
-    favicon: "/assets/webdev.png",
     description:
       "Guidance to build modern web experiences that work on any browser. Learn about web vitals, PWAs, and more.",
     tags: ["Performance", "Learning", "Tips"],
@@ -98,7 +93,6 @@ export const bookmarks = [
     id: 6,
     title: "Tailwind CSS",
     url: "tailwindcss.com",
-    favicon: "/assets/tailwind.png",
     description:
       "A utility-first CSS framework for rapidly building modern websites without ever leaving your HTML.",
     tags: ["CSS", "Framework", "Tools"],
@@ -113,7 +107,6 @@ export const bookmarks = [
     id: 7,
     title: "Dev.to",
     url: "dev.to",
-    favicon: "/assets/devto.png",
     description:
       "A constructive and inclusive social network for software developers. Share knowledge and grow your career.",
     tags: ["Community", "Learning", "Programming"],
@@ -128,7 +121,6 @@ export const bookmarks = [
     id: 8,
     title: "JavaScript.info",
     url: "javascript.info",
-    favicon: "/assets/javascript-info.png",
     description:
       "The Modern JavaScript Tutorial. How it's done now. From the basics to advanced topics with simple, but detailed explanations.",
     tags: ["JavaScript", "Tutorial", "Reference"],
@@ -143,7 +135,6 @@ export const bookmarks = [
     id: 9,
     title: "freeCodeCamp",
     url: "freecodecamp.org",
-    favicon: "/assets/freecodecamp.png",
     description:
       "Learn to code for free. Build projects. Earn certifications. An open source community that helps you learn to code with free online courses.",
     tags: ["Learning", "Community", "Courses"],
@@ -158,7 +149,6 @@ export const bookmarks = [
     id: 10,
     title: "GitHub",
     url: "github.com",
-    favicon: "/assets/github.png",
     description:
       "GitHub is a developer platform where developers collaborate, build software, and manage code repositories.",
     tags: ["Git", "Development", "Tools"],
@@ -173,7 +163,6 @@ export const bookmarks = [
     id: 11,
     title: "CSS Tricks",
     url: "css-tricks.com",
-    favicon: "/assets/css-tricks.png",
     description:
       "A website dedicated to helping developers learn CSS, front-end development, and modern web techniques.",
     tags: ["CSS", "Tips", "Learning"],
@@ -188,7 +177,6 @@ export const bookmarks = [
     id: 12,
     title: "Stack Overflow",
     url: "stackoverflow.com",
-    favicon: "/assets/stackoverflow.png",
     description:
       "A community platform where developers ask questions and share programming knowledge.",
     tags: ["Community", "Reference", "Programming"],
@@ -204,7 +192,6 @@ export const Archivedbookmarks = [
     id: 6,
     title: "Tailwind CSS",
     url: "tailwindcss.com",
-    favicon: "/assets/tailwind.png",
     description:
       "A utility-first CSS framework for rapidly building modern websites without ever leaving your HTML.",
     tags: ["CSS", "Framework", "Tools"],
@@ -218,7 +205,6 @@ export const Archivedbookmarks = [
     id: 2,
     title: "MDN Web Docs",
     url: "developer.mozilla.org",
-    favicon: "/assets/mdn.png",
     description:
       "The MDN Web Docs site provides information about Open Web technologies including HTML, CSS, and APIs for both Web sites and progressive web apps.",
     tags: ["Reference", "HTML", "CSS", "JavaScript"],

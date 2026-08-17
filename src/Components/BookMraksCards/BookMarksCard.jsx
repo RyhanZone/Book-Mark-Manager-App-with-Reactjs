@@ -1,5 +1,10 @@
 import { useState } from "react";
+import {
+  VisitBookmarkUrl,
+  CopyBookmarkUrl,
+} from "../../Services/bookmarkActions";
 export default function BookMarksCard({
+  id,
   cardTitle,
   cardUrl,
   cardDescription,
@@ -7,6 +12,8 @@ export default function BookMarksCard({
   cardViews,
   cardCDate,
   cardLVDate,
+  bookmarks,
+  setBookmarks,
 }) {
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -66,7 +73,13 @@ export default function BookMarksCard({
               } flex-col gap-[var(--spacing-050)] p-[var(--spacing-100)] bg-[var(--n-l-0)] dark:bg-[var(--n-d-600)] rounded-[var(--b-r-8)] w-[200px] shadow-[0px_6px_14px_0px_rgba(34,34,39,0.1)] border border-[var(--n-l-100)] dark:border-[var(--n-d-500)]`}
             >
               {/* Visit */}
-              <div className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
+              <div
+                onClick={() => {
+                  VisitBookmarkUrl(id, bookmarks, setBookmarks);
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+              >
                 <i className="bi bi-box-arrow-up-right shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
                 <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
                   Visit
@@ -74,7 +87,13 @@ export default function BookMarksCard({
               </div>
 
               {/* Copy URL */}
-              <div className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
+              <div
+                onClick={() => {
+                  CopyBookmarkUrl(id, bookmarks);
+                  setIsMenuOpen(false);
+                }}
+                className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+              >
                 <i className="bi bi-link-45deg shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
                 <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
                   Copy URL
@@ -82,7 +101,7 @@ export default function BookMarksCard({
               </div>
 
               {/* Pin */}
-              <div className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
+              <div onclick={()=>{}} className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
                 <i className="bi bi-pin-angle shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
                 <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
                   Pin

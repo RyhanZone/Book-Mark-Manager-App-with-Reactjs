@@ -1,19 +1,13 @@
-import { useState } from "react";
-
-export default function TextAreaFilds({labeltxt}) {
-  const [text, setText] = useState("");
-
-  const charCount = text.length;
-
-  const handleChange = (e) => {
-    const value = e.target.value;
-
-    if (value.length <= 280) {
-      setText(value);
-    }
-  };
+export default function TextAreaFilds({ labeltxt, name, onChange, value }) {
+  const charCount = value?.length || 0;
 
   const isLimitReached = charCount === 280;
+
+  const handleChange = (e) => {
+    if (e.target.value.length <= 280) {
+      onChange(e);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-[var(--spacing-075)]">
@@ -23,8 +17,8 @@ export default function TextAreaFilds({labeltxt}) {
         </label>
 
         <textarea
-          value={text}
-          // placeholder="Search"
+          name={name}
+          value={value}
           onChange={handleChange}
           className={`
             h-[91px]
@@ -54,7 +48,7 @@ export default function TextAreaFilds({labeltxt}) {
       <div className="text-[var(--n-l-800)] dark:text-[var(--n-d-100)] flex justify-between">
         <p className="t-p-4-medium"></p>
 
-        <p className={`t-p-5 ${isLimitReached && "text-[var(--r-600)]"}`}>
+        <p className={`t-p-5 ${isLimitReached ? "text-[var(--r-600)]" : ""}`}>
           {charCount}/280
         </p>
       </div>

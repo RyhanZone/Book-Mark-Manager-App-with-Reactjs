@@ -1,5 +1,5 @@
 
-export default function InputFild({ labelTxt, inputType, onChange, name, value }) {
+export default function TagsInputfilds({ labelTxt, inputType, onChange, name}) {
   return (
     <div className="flex flex-col gap-[var(--spacing-075)]">
       <label className="t-p-4 text-[var(--n-l-900)] dark:text-[var(--n-d-0)]">
@@ -8,7 +8,6 @@ export default function InputFild({ labelTxt, inputType, onChange, name, value }
       <input
         type={inputType}
         onChange={onChange}
-        value={value}
         name={name}
         className="
             text-[var(--n-l-800)]

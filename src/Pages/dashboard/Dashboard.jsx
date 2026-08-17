@@ -5,26 +5,61 @@ import InputFild from "../../Components/Inputfilds/InputFild";
 import TextAreaFilds from "../../Components/Inputfilds/TextAreaFilds";
 import PrimaryButton from "../../Components/Buttons/PrimaryButton";
 import SecondaryButton from "../../Components/Buttons/SecondaryButton";
-import {AddBookmarkFunction} from "../../Services/bookmarkActions";
+import { AddBookmarkFunction } from "../../Services/bookmarkActions";
+import { bookmarks as bookmarksList } from "../../Data/data";
+import TagsInputfilds from "../../Components/Inputfilds/TagsInputfilds";
 export default function Dashboard({ darkMode, setDarkMode }) {
   let [IsHomeActive, setIsHomeActive] = useState(true);
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
   let [IsFormActive, setIsFormActive] = useState(false);
+  const [bookmarks, setBookmarks] = useState(bookmarksList);
 
   const [bookmarkData, setBookmarkData] = useState({
+    id: bookmarks.length + 1,
     title: "",
     description: "",
     url: "",
-    tags: "",
+    tags: [],
+    isPinned: false,
+    isArchived: false,
+    createdAt: new Date().toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    }),
+    views: 0,
+    cardLVDate: "23 Sep 2026",
   });
+  function clearInputFields() {
+    setBookmarkData({
+      id: bookmarks.length + 1,
+      title: "",
+      description: "",
+      url: "",
+      tags: [],
+      isPinned: false,
+      isArchived: false,
+      createdAt: new Date().toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+      cardLVDate: "23 Sep 2026",
+    });
+  }
   function handleChange(e) {
     const { name, value } = e.target;
 
     setBookmarkData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]:
+        name === "tags"
+          ? value
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter(Boolean)
+          : value,
     }));
-    console.log();
   }
   return (
     <div
@@ -44,6 +79,8 @@ export default function Dashboard({ darkMode, setDarkMode }) {
         setMenuOpen={setIsMenuOpen}
         darkMode={darkMode}
         setDarkMode={setDarkMode}
+        bookmarksList={bookmarks}
+        setBookmarks={setBookmarks}
       />
       <div
         className={`absolute w-full h-screen bg-[#131313B2] dark:bg-[#131313B2] ${IsFormActive ? "flex" : "hidden"} justify-center items-center`}
@@ -76,19 +113,22 @@ export default function Dashboard({ darkMode, setDarkMode }) {
               inputType={"text"}
               name={"title"}
               onChange={handleChange}
+              value={bookmarkData.title}
             />
             <TextAreaFilds
               labeltxt={"Description"}
               name={"description"}
               onChange={handleChange}
+              value={bookmarkData.description}
             />
             <InputFild
               labelTxt={"Website Url*"}
               inputType={"text"}
               name={"url"}
               onChange={handleChange}
+              value={bookmarkData.url}
             />
-            <InputFild
+            <TagsInputfilds
               labelTxt={"Tags *"}
               inputType={"text"}
               name={"tags"}
@@ -103,7 +143,14 @@ export default function Dashboard({ darkMode, setDarkMode }) {
               }}
               text={"Cancel"}
             />
-            <PrimaryButton onbuttonClick={() => {AddBookmarkFunction(bookmarkData)}} text={"Add Bookmark"} />
+            <PrimaryButton
+              onbuttonClick={() => {
+                AddBookmarkFunction(bookmarkData, setBookmarks);
+                clearInputFields();
+                setIsFormActive(false);
+              }}
+              text={"Add Bookmark"}
+            />
           </div>
         </div>
       </div>
