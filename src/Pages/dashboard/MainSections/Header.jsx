@@ -34,7 +34,7 @@ export default function Header({
       <div className="relative flex gap-[var(--spacing-200)]">
         <AddBookmarkButton onClick={() => setIsFormActive(!IsFormActive)} />
         <img
-          onClick={() => setIsMenuOpen(true)}
+          onClick={() => setIsMenuOpen(!IsMenuOpen)}
           src={ProfilePic}
           alt="Avater img"
           className="cursor-pointer"

@@ -1,11 +1,5 @@
-import { useState } from "react";
 
-export default function InputFild({ labelTxt, inputType }) {
-  let [text, settext] = useState("");
-  function handleChange(e) {
-    let value = e.target.value;
-    settext(value);
-  }
+export default function InputFild({ labelTxt, inputType, onChange, name }) {
   return (
     <div className="flex flex-col gap-[var(--spacing-075)]">
       <label className="t-p-4 text-[var(--n-l-900)] dark:text-[var(--n-d-0)]">
@@ -13,8 +7,8 @@ export default function InputFild({ labelTxt, inputType }) {
       </label>
       <input
         type={inputType}
-        value={text}
-        onChange={handleChange}
+        onChange={onChange}
+        name={name}
         className="
             text-[var(--n-l-800)]
             dark:text-[var(--n-d-100)]

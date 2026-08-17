@@ -32,9 +32,7 @@ export default function LeftSidebar({
             <div
               onClick={() => !HomeActive && setIsHomeActive(true)}
               className={`flex gap-[var(--spacing-100)] px-[var(--spacing-100)] py-[var(--spacing-150)] rounded-[var(--b-r-8)] ${
-                HomeActive
-                  ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]"
-                  : ""
+                HomeActive ? "bg-[var(--n-l-100)] dark:bg-[var(--n-d-600)]" : ""
               } hover:bg-[var(--n-l-100)] hover:dark:bg-[var(--n-d-600)] cursor-pointer`}
             >
               <svg
