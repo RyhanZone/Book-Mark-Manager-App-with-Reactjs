@@ -1,8 +1,48 @@
 import { useState } from "react";
 import BookMarksCard from "../../../Components/BookMraksCards/BookMarksCard";
-import { Archivedbookmarks } from "../../../Data/data";
-export default function ArchivedBookmarks() {
+
+export default function ArchivedBookmarks({
+  bookmarks,
+  setBookmarks,
+  pinbookmarks,
+  setpinbookmarks,
+  setIsEditFormActive,
+  handleEditBookmark,
+  selectedTags = [],
+  searchText = "",
+}) {
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
+  const [sortBy, setSortBy] = useState("Recent added");
+
+  const matchesSelectedTags = (b) => {
+    if (!selectedTags || selectedTags.length === 0) return true;
+    return b.tags?.some((tag) =>
+      selectedTags.some((selected) => selected.toLowerCase() === tag.toLowerCase())
+    );
+  };
+
+  const matchesSearch = (b) => {
+    if (!searchText) return true;
+    return b.title?.toLowerCase().includes(searchText.toLowerCase());
+  };
+
+  const archivedList = (bookmarks || []).filter(
+    (b) => b.isArchived && matchesSelectedTags(b) && matchesSearch(b)
+  );
+
+  const sortedArchivedList = [...archivedList].sort((a, b) => {
+    if (sortBy === "Recent added") {
+      return (b.id || 0) - (a.id || 0);
+    } else if (sortBy === "Recently visited") {
+      const dateA = new Date(a.cardLVDate || 0).getTime();
+      const dateB = new Date(b.cardLVDate || 0).getTime();
+      return dateB - dateA;
+    } else if (sortBy === "Most visited") {
+      return (b.views || 0) - (a.views || 0);
+    }
+    return 0;
+  });
+
   return (
     <div className="h-full overflow-y-scroll pt-[var(--spacing-400)] px-[var(--spacing-400)] pb-[var(--spacing-400)]">
       <div className="w-full flex justify-between">
@@ -36,28 +76,47 @@ export default function ArchivedBookmarks() {
           </div>
           {/* filter dropdown */}
           <div
-            className={`absolute ${IsMenuOpen ? "flex" : "hidden"} z-200 right-[-0%] w-[200px] p-[var(--spacing-100)] flex flex-col gap-[var(--spacing-050)] rounded-[var(--b-r-8)] bg-[var(--n-l-0)] dark:bg-[var(--n-d-500)]`}
+            className={`absolute ${IsMenuOpen ? "flex" : "hidden"} z-200 right-[-0%] w-[200px] p-[var(--spacing-100)] flex flex-col gap-[var(--spacing-050)] rounded-[var(--b-r-8)] bg-[var(--n-l-0)] dark:bg-[var(--n-d-500)] shadow-md`}
           >
-            <div className="w-full flex justify-between text-[var(--n-l-900)] dark:text-[var(--n-d-100)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-400)]">
+            <div
+              onClick={() => {
+                setSortBy("Recent added");
+                setIsMenuOpen(false);
+              }}
+              className="w-full flex justify-between items-center text-[var(--n-l-900)] dark:text-[var(--n-d-100)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-400)] cursor-pointer"
+            >
               <p className="t-p-4">Recent added</p>
-              <i className="bi bi-check"></i>
+              {sortBy === "Recent added" && <i className="bi bi-check text-[18px]"></i>}
             </div>
-            <div className="w-full flex justify-between text-[var(--n-l-900)] dark:text-[var(--n-d-100)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-400)]">
+            <div
+              onClick={() => {
+                setSortBy("Recently visited");
+                setIsMenuOpen(false);
+              }}
+              className="w-full flex justify-between items-center text-[var(--n-l-900)] dark:text-[var(--n-d-100)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-400)] cursor-pointer"
+            >
               <p className="t-p-4">Recently visited</p>
-              <i className="bi bi-check"></i>
+              {sortBy === "Recently visited" && <i className="bi bi-check text-[18px]"></i>}
             </div>
-            <div className="w-full flex justify-between text-[var(--n-l-900)] dark:text-[var(--n-d-100)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-400)]">
+            <div
+              onClick={() => {
+                setSortBy("Most visited");
+                setIsMenuOpen(false);
+              }}
+              className="w-full flex justify-between items-center text-[var(--n-l-900)] dark:text-[var(--n-d-100)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-400)] cursor-pointer"
+            >
               <p className="t-p-4">Most visited</p>
-              <i className="bi bi-check"></i>
+              {sortBy === "Most visited" && <i className="bi bi-check text-[18px]"></i>}
             </div>
           </div>
         </div>
       </div>
       <div className="grid 2xl:grid-cols-4 xl:grid-cols-3 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-5 justify-center 2xl:justify-between md:justify-start mt-[var(--spacing-400)]">
-        {Archivedbookmarks.map((bookmark) => {
+        {sortedArchivedList.map((bookmark) => {
           return (
             <BookMarksCard
               key={bookmark.id}
+              id={bookmark.id}
               cardTitle={bookmark.title}
               cardUrl={bookmark.url}
               cardDescription={bookmark.description}
@@ -65,6 +124,13 @@ export default function ArchivedBookmarks() {
               cardViews={bookmark.views}
               cardCDate={bookmark.createdAt}
               cardLVDate={bookmark.cardLVDate}
+              bookmarks={bookmarks}
+              setBookmarks={setBookmarks}
+              pinbookmarks={pinbookmarks}
+              isArchived={bookmark.isArchived}
+              setpinbookmarks={setpinbookmarks}
+              setIsEditFormActive={setIsEditFormActive}
+              handleEditBookmark={handleEditBookmark}
             />
           );
         })}

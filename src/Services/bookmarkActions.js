@@ -44,7 +44,7 @@ export function CopyBookmarkUrl(key, bookmarks) {
   navigator.clipboard.writeText(url);
 }
 // pin Bookmark
-export function PinBookmark(key, bookmarks, setBookmarks) {
+export function pinbookmarksfunction(key, bookmarks, setBookmarks){
   const updatedBookmarks = bookmarks.map((bookmark) => {
     if (bookmark.id === key) {
       return { ...bookmark, isPinned: !bookmark.isPinned };
@@ -52,4 +52,34 @@ export function PinBookmark(key, bookmarks, setBookmarks) {
     return bookmark;
   });
   setBookmarks(updatedBookmarks);
+  console.log(updatedBookmarks);
+}
+// archived bookmark
+export function Archivedbookmarksfunction(key, bookmarks, setBookmarks){
+  const updatedBookmarks = bookmarks.map((bookmark) => {
+    if (bookmark.id === key) {
+      return { ...bookmark, isArchived: !bookmark.isArchived };
+    }
+    return bookmark;
+  });
+  setBookmarks(updatedBookmarks);
+  console.log(updatedBookmarks);
+}
+// update bookmark
+export function UpdateBookmarkFunction(editBookmarkData, setBookmarks) {
+  setBookmarks((prev) =>
+    prev.map((bookmark) => {
+      if (bookmark.id === editBookmarkData.id) {
+        return {
+          ...bookmark,
+          ...editBookmarkData,
+        };
+      }
+      return bookmark;
+    })
+  );
+}
+// delete bookmark permanently
+export function DeleteBookmarkFunction(key, setBookmarks) {
+  setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== key));
 }

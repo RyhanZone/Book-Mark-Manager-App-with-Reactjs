@@ -215,3 +215,4 @@ export const Archivedbookmarks = [
     cardLVDate: "24 Sep 2026",
   }
 ];
+export const Pinnedbookmarks = [];

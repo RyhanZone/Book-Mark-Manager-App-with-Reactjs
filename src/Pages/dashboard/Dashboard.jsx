@@ -5,14 +5,37 @@ import InputFild from "../../Components/Inputfilds/InputFild";
 import TextAreaFilds from "../../Components/Inputfilds/TextAreaFilds";
 import PrimaryButton from "../../Components/Buttons/PrimaryButton";
 import SecondaryButton from "../../Components/Buttons/SecondaryButton";
-import { AddBookmarkFunction } from "../../Services/bookmarkActions";
-import { bookmarks as bookmarksList } from "../../Data/data";
+import { AddBookmarkFunction, UpdateBookmarkFunction } from "../../Services/bookmarkActions";
+import tags, {
+  bookmarks as bookmarksList,
+  Pinnedbookmarks as Pinbookmarks,
+} from "../../Data/data";
 import TagsInputfilds from "../../Components/Inputfilds/TagsInputfilds";
+//
 export default function Dashboard({ darkMode, setDarkMode }) {
   let [IsHomeActive, setIsHomeActive] = useState(true);
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
   let [IsFormActive, setIsFormActive] = useState(false);
   const [bookmarks, setBookmarks] = useState(bookmarksList);
+  const [pinbookmarks, setpinbookmarks] = useState(Pinbookmarks);
+  const [IsEditFormActive, setIsEditFormActive] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  function handleTagToggle(tagName) {
+    setSelectedTags((prev) =>
+      prev.includes(tagName)
+        ? prev.filter((t) => t.toLowerCase() !== tagName.toLowerCase())
+        : [...prev, tagName]
+    );
+  }
+
+  const dynamicTags = tags.map((tag) => {
+    const count = bookmarks.filter((b) =>
+      b.tags?.some((t) => t.toLowerCase() === tag.name.toLowerCase())
+    ).length;
+    return { ...tag, count };
+  });
 
   const [bookmarkData, setBookmarkData] = useState({
     id: bookmarks.length + 1,
@@ -61,6 +84,40 @@ export default function Dashboard({ darkMode, setDarkMode }) {
           : value,
     }));
   }
+  // edit bookmarks
+  const [editBookmarkData, setEditBookmarkData] = useState({
+    id: null,
+    title: "",
+    description: "",
+    url: "",
+    tags: [],
+  });
+  function handleEditChange(e) {
+    const { name, value } = e.target;
+
+    setEditBookmarkData((prev) => ({
+      ...prev,
+      [name]:
+        name === "tags"
+          ? value
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter(Boolean)
+          : value,
+    }));
+  }
+
+  function handleEditBookmark(bookmark) {
+    setEditBookmarkData({
+      id: bookmark.id,
+      title: bookmark.title || "",
+      description: bookmark.description || "",
+      url: bookmark.url || "",
+      tags: Array.isArray(bookmark.tags) ? bookmark.tags : [],
+    });
+    setIsEditFormActive(true);
+  }
+
   return (
     <div
       className={`relative h-screen overflow-hidden bg-[var(--n-l-100)] dark:bg-[var(--n-d-900)] flex w-full`}
@@ -70,6 +127,9 @@ export default function Dashboard({ darkMode, setDarkMode }) {
         setIsHomeActive={setIsHomeActive}
         MenuOpen={IsMenuOpen}
         setMenuOpen={setIsMenuOpen}
+        tagsList={dynamicTags}
+        selectedTags={selectedTags}
+        handleTagToggle={handleTagToggle}
       />
       <MainSection
         IsFormActive={IsFormActive}
@@ -81,7 +141,16 @@ export default function Dashboard({ darkMode, setDarkMode }) {
         setDarkMode={setDarkMode}
         bookmarksList={bookmarks}
         setBookmarks={setBookmarks}
+        pinbookmarks={pinbookmarks}
+        setpinbookmarks={setpinbookmarks}
+        setIsEditFormActive={setIsEditFormActive}
+        handleEditBookmark={handleEditBookmark}
+        selectedTags={selectedTags}
+        searchText={searchText}
+        setSearchText={setSearchText}
       />
+      
+      {/* add bookmarks Form */}
       <div
         className={`absolute w-full h-screen bg-[#131313B2] dark:bg-[#131313B2] ${IsFormActive ? "flex" : "hidden"} justify-center items-center`}
       >
@@ -150,6 +219,87 @@ export default function Dashboard({ darkMode, setDarkMode }) {
                 setIsFormActive(false);
               }}
               text={"Add Bookmark"}
+            />
+          </div>
+        </div>
+      </div>
+      {/* Edit Bookmark Form */}
+      <div
+        className={`absolute z-50 w-full h-screen bg-[#131313B2] ${
+          IsEditFormActive ? "flex" : "hidden"
+        } justify-center items-center`}
+      >
+        <div className="w-[570px] h-auto py-[var(--spacing-500)] px-[var(--spacing-400)] border border-[var(--n-l-100)] dark:border-[var(--n-d-500)] bg-[var(--n-l-0)] dark:bg-[var(--n-d-800)] rounded-[var(--b-r-12)] flex flex-col gap-[var(--spacing-400)]">
+          {/* Heading */}
+          <div className="flex flex-col gap-[var(--spacing-075)]">
+            <div className="flex justify-between items-center">
+              <h1 className="t-p-1 text-[var(--n-l-900)] dark:text-[var(--n-d-0)]">
+                Edit bookmark
+              </h1>
+
+              <div
+                onClick={() => setIsEditFormActive(false)}
+                className="border flex justify-center items-center rounded h-8 w-8 border-[var(--n-l-400)] dark:border-[var(--n-d-500)] cursor-pointer"
+              >
+                <i className="bi bi-x text-[20px] text-[var(--n-l-900)] dark:text-[var(--n-d-0)]"></i>
+              </div>
+            </div>
+
+            <p className="t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+              Update your saved link details — change the title, description,
+              URL, or tags anytime.
+            </p>
+          </div>
+
+          {/* Input Fields */}
+          <div className="flex flex-col gap-[var(--spacing-250)]">
+            <InputFild
+              labelTxt="Title *"
+              inputType="text"
+              name="title"
+              value={editBookmarkData.title}
+              onChange={handleEditChange}
+            />
+
+            <TextAreaFilds
+              labeltxt="Description *"
+              name="description"
+              value={editBookmarkData.description}
+              onChange={handleEditChange}
+            />
+
+            <InputFild
+              labelTxt="Website URL *"
+              inputType="text"
+              name="url"
+              value={editBookmarkData.url}
+              onChange={handleEditChange}
+            />
+
+            <InputFild
+              labelTxt="Tags *"
+              inputType="text"
+              name="tags"
+              value={editBookmarkData.tags.join(", ")}
+              onChange={handleEditChange}
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="flex gap-[var(--spacing-200)]">
+            <SecondaryButton
+              onClick={() => {
+                setIsEditFormActive(false);
+              }}
+              text="Cancel"
+            />
+
+            <PrimaryButton
+              onbuttonClick={() => {
+                UpdateBookmarkFunction(editBookmarkData, setBookmarks);
+                setIsEditFormActive(false);
+              }}
+              text="Save Bookmark"
             />
           </div>
         </div>

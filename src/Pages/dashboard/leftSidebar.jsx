@@ -7,7 +7,12 @@ export default function LeftSidebar({
   setIsHomeActive,
   MenuOpen,
   setMenuOpen,
+  tagsList,
+  selectedTags = [],
+  handleTagToggle,
 }) {
+  const displayTags = tagsList || tags;
+
   return (
     <div
       className={`${
@@ -89,21 +94,28 @@ export default function LeftSidebar({
               TAGS
             </p>
             <div className="">
-              {tags.map((item) => {
+              {displayTags.map((item) => {
+                const isChecked = selectedTags.some(
+                  (t) => t.toLowerCase() === item.name.toLowerCase(),
+                );
                 return (
                   <div
                     key={item.id}
-                    className="py-[var(--spacing-100)] px-[var(--spacing-150)] flex justify-between"
+                    className="py-[var(--spacing-100)] px-[var(--spacing-150)] flex justify-between items-center"
                   >
                     <div className="flex gap-[var(--spacing-100)] items-center">
                       <input
                         className="h-4 w-4 border border-[var(--n-l-500)] dark:border-[var(--n-l-300)] dark:accent-amber-300 checked:bg-[var(--t-700)] checked:border-[var(--t-700)] cursor-pointer"
                         type="checkbox"
                         id={`tag-${item.id}`}
+                        checked={isChecked}
+                        onChange={() =>
+                          handleTagToggle && handleTagToggle(item.name)
+                        }
                       />
 
                       <label
-                        className="t-p-3 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]"
+                        className="t-p-3 text-[var(--n-l-800)] dark:text-[var(--n-d-100)] cursor-pointer"
                         htmlFor={`tag-${item.id}`}
                       >
                         {item.name}

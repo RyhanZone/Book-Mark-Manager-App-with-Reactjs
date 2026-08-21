@@ -2,6 +2,9 @@ import { useState } from "react";
 import {
   VisitBookmarkUrl,
   CopyBookmarkUrl,
+  pinbookmarksfunction,
+  Archivedbookmarksfunction,
+  DeleteBookmarkFunction,
 } from "../../Services/bookmarkActions";
 export default function BookMarksCard({
   id,
@@ -14,14 +17,20 @@ export default function BookMarksCard({
   cardLVDate,
   bookmarks,
   setBookmarks,
+  isPinned,
+  isArchived,
+  pinbookmarks,
+  setpinbookmarks,
+  setIsEditFormActive,
+  handleEditBookmark,
 }) {
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
+
 
   const getFavicon = (url) => {
     const domain = new URL(`https://${url}`).hostname;
     return `https://www.google.com/s2/favicons?domain=${domain}`;
   };
-
   return (
     <div className="bg-[var(--n-l-0)] flex flex-col justify-between dark:bg-[var(--n-d-800)] rounded-[var(--b-r-12)] max-w-[338px]">
       {/* card top */}
@@ -29,7 +38,7 @@ export default function BookMarksCard({
         {/* header */}
         <div className="flex justify-between">
           {/* card header and img */}
-          <div className="flex gap-[var(--spacing-150)]">
+          <div className="flex gap-[var(--spacing-150)] items-center">
             <div className="w-[44px] h-[44px] shrink-0 rounded-[var(--b-r-8)] border border-[var(--n-l-100)] dark:border-[var(--n-d-500)] overflow-hidden flex items-center justify-center">
               <img
                 src={getFavicon(cardUrl)}
@@ -100,29 +109,95 @@ export default function BookMarksCard({
                 </p>
               </div>
 
-              {/* Pin */}
-              <div onclick={()=>{}} className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
-                <i className="bi bi-pin-angle shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
-                <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
-                  Pin
-                </p>
-              </div>
+              {isArchived ? (
+                <>
+                  {/* Unarchive */}
+                  <div
+                    onClick={() => {
+                      Archivedbookmarksfunction(id, bookmarks, setBookmarks);
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+                  >
+                    <i className="bi bi-arrow-counterclockwise shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
+                    <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+                      Unarchive
+                    </p>
+                  </div>
 
-              {/* Edit */}
-              <div className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
-                <i className="bi bi-pencil shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
-                <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
-                  Edit
-                </p>
-              </div>
+                  {/* Delete Permanently */}
+                  <div
+                    onClick={() => {
+                      DeleteBookmarkFunction(id, setBookmarks);
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+                  >
+                    <i className="bi bi-trash shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
+                    <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+                      Delete Permanently
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Pin / Unpin */}
+                  <div
+                    onClick={() => {
+                      pinbookmarksfunction(id, bookmarks, setBookmarks);
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+                  >
+                    <i
+                      className={`bi ${isPinned ? "bi-pin-fill" : "bi-pin-angle"} shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]`}
+                    />
+                    <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+                      {isPinned ? "Unpin" : "Pin"}
+                    </p>
+                  </div>
 
-              {/* Archive */}
-              <div className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer">
-                <i className="bi bi-archive shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
-                <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
-                  Archive
-                </p>
-              </div>
+                  {/* Edit */}
+                  <div
+                    onClick={() => {
+                      if (handleEditBookmark) {
+                        const bookmarkObj = (bookmarks &&
+                          bookmarks.find((b) => b.id === id)) || {
+                          id,
+                          title: cardTitle,
+                          url: cardUrl,
+                          description: cardDescription,
+                          tags: cardTags,
+                        };
+                        handleEditBookmark(bookmarkObj);
+                      } else {
+                        setIsEditFormActive(true);
+                      }
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+                  >
+                    <i className="bi bi-pencil shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
+                    <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+                      Edit
+                    </p>
+                  </div>
+
+                  {/* Archive */}
+                  <div
+                    onClick={() => {
+                      Archivedbookmarksfunction(id, bookmarks, setBookmarks);
+                      setIsMenuOpen(false);
+                    }}
+                    className="flex items-center gap-[var(--spacing-125)] p-[var(--spacing-100)] rounded-[var(--b-r-6)] hover:bg-[var(--n-l-100)] dark:hover:bg-[var(--n-d-500)] cursor-pointer"
+                  >
+                    <i className="bi bi-archive shrink-0 text-[16px] leading-none text-[var(--n-l-800)] dark:text-[var(--n-d-100)]" />
+                    <p className="t-p-4 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+                      Archive
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -142,25 +217,32 @@ export default function BookMarksCard({
         </div>
       </div>
       {/* card bottom */}
-      <div className="py-[var(--spacing-150)] px-[var(--spacing-200)] flex gap-[var(--spacing-200)] border-t border-[var(--n-l-100)] dark:border-[var(--n-d-500)]">
-        <div className="flex items-center gap-[var(--spacing-075)]">
-          <i className="bi bi-eye text-[12px] text-[var(--n-l-800)] dark:text-[var(--n-d-100)] "></i>
-          <p className="t-p-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
-            {cardViews}
-          </p>
+      <div className="py-[var(--spacing-150)] px-[var(--spacing-200)] flex gap-[var(--spacing-200)] justify-between border-t border-[var(--n-l-100)] dark:border-[var(--n-d-500)]">
+        <div className="flex gap-[var(--spacing-200)]">
+          <div className="flex items-center gap-[var(--spacing-075)]">
+            <i className="bi bi-eye text-[12px] text-[var(--n-l-800)] dark:text-[var(--n-d-100)] "></i>
+            <p className="t-p-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+              {cardViews}
+            </p>
+          </div>
+          <div className="flex items-center gap-[var(--spacing-075)]">
+            <i className="bi bi-clock text-[12px] text-[var(--n-l-800)] dark:text-[var(--n-d-100)] "></i>
+            <p className="t-p-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+              {cardCDate}
+            </p>
+          </div>
+          <div className="flex items-center gap-[var(--spacing-075)]">
+            <i className="bi bi-calendar4 text-[12px] text-[var(--n-l-800)] dark:text-[var(--n-d-100)] "></i>
+            <p className="t-p-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
+              {cardLVDate}
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-[var(--spacing-075)]">
-          <i className="bi bi-clock text-[12px] text-[var(--n-l-800)] dark:text-[var(--n-d-100)] "></i>
-          <p className="t-p-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
-            {cardCDate}
-          </p>
-        </div>
-        <div className="flex items-center gap-[var(--spacing-075)]">
-          <i className="bi bi-calendar4 text-[12px] text-[var(--n-l-800)] dark:text-[var(--n-d-100)] "></i>
-          <p className="t-p-5 text-[var(--n-l-800)] dark:text-[var(--n-d-100)]">
-            {cardLVDate}
-          </p>
-        </div>
+        {isPinned ? (
+          <i className="bi bi-pin-fill text-[var(--n-l-800)] dark:text-[var(--n-d-100)]"></i>
+        ) : (
+          <i></i>
+        )}
       </div>
     </div>
   );

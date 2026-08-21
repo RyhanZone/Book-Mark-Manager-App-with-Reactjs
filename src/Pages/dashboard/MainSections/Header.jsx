@@ -7,7 +7,9 @@ export default function Header({
   darkMode,
   setDarkMode,
   IsFormActive,
-  setIsFormActive
+  setIsFormActive,
+  searchText,
+  setSearchText,
 }) {
   let [IsMenuOpen, setIsMenuOpen] = useState(false);
   return (
@@ -27,6 +29,8 @@ export default function Header({
           <input
             type="text"
             placeholder="Search by title..."
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             className=" w-full h-[45px] pl-[var(--spacing-600)] pr-[var(--spacing-150)] rounded-[var(--b-r-8)] border border-[var(--n-l-300)] dark:border-[var(--n-d-400)] bg-[var(--n-l-0)] dark:bg-[var(--n-d-500)] t-p-4-medium text-[var(--n-l-800)] dark:text-[var(--n-d-100)] placeholder:text-[var(--n-l-800)] dark:placeholder:text-[var(--n-d-100)]  placeholder:t-p-4-medium focus:outline-none focus:border-[var(--t-700)] focus:ring-1 focus:ring-[var(--t-700)]"
           />
         </div>

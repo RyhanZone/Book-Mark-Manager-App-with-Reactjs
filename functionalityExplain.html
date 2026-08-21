@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bookmark Manager App — Functionality Explained</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #30363d;
+      --text: #c9d1d9;
+      --heading: #f0f6fc;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --accent3: #d29922;
+      --accent4: #f85149;
+      --code-bg: #0d1117;
+      --tag-bg: #1f2937;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 40px 20px;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 {
+      font-size: 2.2rem;
+      color: var(--heading);
+      text-align: center;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #8b949e;
+      margin-bottom: 48px;
+      font-size: 1rem;
+    }
+    /* Table of Contents */
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 32px;
+      margin-bottom: 48px;
+    }
+    .toc h2 {
+      color: var(--accent);
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toc ol {
+      padding-left: 20px;
+      columns: 2;
+      column-gap: 32px;
+    }
+    .toc li {
+      margin-bottom: 6px;
+      break-inside: avoid;
+    }
+    .toc a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* Feature Cards */
+    .feature {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      transition: border-color 0.2s;
+    }
+    .feature:hover { border-color: var(--accent); }
+    .feature-number {
+      display: inline-block;
+      background: var(--accent);
+      color: #0d1117;
+      font-weight: 700;
+      font-size: 0.8rem;
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border-radius: 50%;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .feature h2 {
+      color: var(--heading);
+      font-size: 1.35rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+    }
+    .feature h3 {
+      color: var(--accent3);
+      font-size: 1rem;
+      margin: 18px 0 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+    }
+    .feature p, .feature li { font-size: 0.95rem; }
+    .feature ul { padding-left: 20px; margin: 6px 0; }
+    .feature li { margin-bottom: 4px; }
+
+    /* Code blocks */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      overflow-x: auto;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      margin: 10px 0 6px;
+    }
+    code {
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+      color: #e6edf3;
+    }
+    .inline-code {
+      background: var(--tag-bg);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-family: 'Cascadia Code', 'Fira Code', Consolas, monospace;
+      font-size: 0.88rem;
+      color: var(--accent);
+    }
+
+    /* Flow diagram */
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0;
+    }
+    .flow-step {
+      background: var(--tag-bg);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: 'Cascadia Code', monospace;
+      white-space: nowrap;
+    }
+    .flow-arrow { color: var(--accent3); font-size: 1.1rem; }
+
+    /* Tags */
+    .file-tag {
+      display: inline-block;
+      background: #1a2332;
+      color: var(--accent2);
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      font-family: monospace;
+      margin: 2px 4px 2px 0;
+    }
+
+    /* Section dividers */
+    .section-divider {
+      text-align: center;
+      margin: 48px 0 32px;
+      color: #8b949e;
+      font-size: 0.85rem;
+      position: relative;
+    }
+    .section-divider::before,
+    .section-divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 35%;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-divider::before { left: 0; }
+    .section-divider::after { right: 0; }
+
+    /* Architecture overview */
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .arch-card {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .arch-card h4 {
+      color: var(--accent2);
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+    .arch-card p {
+      font-size: 0.85rem;
+      color: #8b949e;
+    }
+
+    @media (max-width: 700px) {
+      .toc ol { columns: 1; }
+      .arch-grid { grid-template-columns: 1fr; }
+      .feature { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📚 Bookmark Manager App</h1>
+    <p class="subtitle">সম্পূর্ণ ফাংশনালিটি ডকুমেন্টেশন — প্রতিটি ফিচার কিভাবে কাজ করে তার বিস্তারিত ব্যাখ্যা</p>
+
+    <!-- Tech Stack -->
+    <div class="feature" style="border-color: var(--accent2);">
+      <h2>🛠️ Tech Stack</h2>
+      <div class="arch-grid">
+        <div class="arch-card">
+          <h4>Frontend Framework</h4>
+          <p>React 19 + Vite (fast dev server & HMR)</p>
+        </div>
+        <div class="arch-card">
+          <h4>Styling</h4>
+          <p>Tailwind CSS v4 + CSS custom properties (design tokens)</p>
+        </div>
+        <div class="arch-card">
+          <h4>Routing</h4>
+          <p>React Router DOM v7 (Login, SignUp, ForgotPassword, Dashboard)</p>
+        </div>
+        <div class="arch-card">
+          <h4>State Management</h4>
+          <p>React useState (single source of truth in Dashboard.jsx)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Architecture -->
+    <div class="feature" style="border-color: var(--accent3);">
+      <h2>🏗️ Component Architecture</h2>
+      <pre><code>App.jsx
+├── Login / SignUp / ForgotPassword (auth pages)
+└── Dashboard.jsx  ← 🏠 মূল state holder
+    ├── LeftSidebar.jsx  ← Navigation + Tag Filter
+    ├── MainSection.jsx  ← Layout wrapper
+    │   ├── Header.jsx  ← Search + Dark Mode + Profile
+    │   ├── Home.jsx  ← Active bookmarks view
+    │   └── ArchivedBookmarks.jsx  ← Archived view
+    ├── Add Bookmark Form (modal)
+    └── Edit Bookmark Form (modal)
+
+BookMarksCard.jsx  ← প্রতিটি বুকমার্ক কার্ড
+bookmarkActions.js ← সব CRUD ও action functions
+data.js            ← Initial data (bookmarks + tags)</code></pre>
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc">
+      <h2>📋 Table of Contents</h2>
+      <ol>
+        <li><a href="#f1">Add Bookmark</a></li>
+        <li><a href="#f2">Edit Bookmark</a></li>
+        <li><a href="#f3">Delete Bookmark Permanently</a></li>
+        <li><a href="#f4">Pin / Unpin Bookmark</a></li>
+        <li><a href="#f5">Archive / Unarchive Bookmark</a></li>
+        <li><a href="#f6">Visit Bookmark</a></li>
+        <li><a href="#f7">Copy URL</a></li>
+        <li><a href="#f8">Search by Title</a></li>
+        <li><a href="#f9">Sort By (Filter)</a></li>
+        <li><a href="#f10">Filter by Tags (Sidebar)</a></li>
+        <li><a href="#f11">Dynamic Tag Count</a></li>
+        <li><a href="#f12">Dark Mode / Light Mode</a></li>
+        <li><a href="#f13">Home vs Archived Navigation</a></li>
+        <li><a href="#f14">Responsive Sidebar</a></li>
+        <li><a href="#f15">Bookmark Card Layout</a></li>
+        <li><a href="#f16">Conditional Menu (Active vs Archived)</a></li>
+      </ol>
+    </div>
+
+    <div class="section-divider">— CRUD Operations —</div>
+
+    <!-- 1. Add Bookmark -->
+    <div class="feature" id="f1">
+      <h2><span class="feature-number">1</span> Add Bookmark</h2>
+      <p>নতুন বুকমার্ক তৈরি করে bookmarks array-তে যোগ করে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Dashboard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+      <span class="file-tag">InputFild.jsx</span>
+      <span class="file-tag">TextAreaFilds.jsx</span>
+      <span class="file-tag">TagsInputfilds.jsx</span>
+      <span class="file-tag">PrimaryButton.jsx</span>
+      <span class="file-tag">SecondaryButton.jsx</span>
+
+      <h3>🔑 State Variables</h3>
+      <ul>
+        <li><span class="inline-code">IsFormActive</span> — মডাল দেখানো/লুকানো (boolean)</li>
+        <li><span class="inline-code">bookmarkData</span> — নতুন বুকমার্কের সব ফিল্ড ধারণ করে (object)</li>
+        <li><span class="inline-code">bookmarks</span> — পুরো bookmarks array (single source of truth)</li>
+      </ul>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>Header-এ <strong>"+ Add Bookmark"</strong> বাটনে ক্লিক → <span class="inline-code">setIsFormActive(true)</span></li>
+        <li>Modal form ওপেন হয় — Title, Description, URL, Tags ইনপুট ফিল্ড দেখায়</li>
+        <li>প্রতিটি ইনপুটের <span class="inline-code">onChange</span> → <span class="inline-code">handleChange(e)</span> → <span class="inline-code">setBookmarkData()</span> আপডেট করে</li>
+        <li>"Add Bookmark" বাটনে ক্লিক → <span class="inline-code">AddBookmarkFunction(bookmarkData, setBookmarks)</span> কল হয়</li>
+        <li>ফাংশন: <span class="inline-code">setBookmarks(prev => [...prev, bookmarkData])</span> — স্প্রেড দিয়ে নতুন এন্ট্রি অ্যাড করে</li>
+        <li><span class="inline-code">clearInputFields()</span> কল হয় — সব ফিল্ড রিসেট</li>
+        <li>মডাল বন্ধ হয়</li>
+      </ol>
+
+      <h3>🔄 Data Flow</h3>
+      <div class="flow">
+        <span class="flow-step">Header Button Click</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">IsFormActive = true</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Modal Opens</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">handleChange()</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">bookmarkData updates</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">AddBookmarkFunction()</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">bookmarks array updated</span>
+      </div>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// bookmarkActions.js
+export function AddBookmarkFunction(bookmarkData, setBookmarks) {
+  setBookmarks((prev) => [...prev, bookmarkData]);
+}
+
+// Dashboard.jsx — "Add Bookmark" বাটনে onClick
+AddBookmarkFunction(bookmarkData, setBookmarks);
+clearInputFields();
+setIsFormActive(false);</code></pre>
+    </div>
+
+    <!-- 2. Edit Bookmark -->
+    <div class="feature" id="f2">
+      <h2><span class="feature-number">2</span> Edit Bookmark</h2>
+      <p>বিদ্যমান বুকমার্কের Title, Description, URL, Tags পরিবর্তন করে। ফর্মে আগের ভ্যালুগুলো pre-fill হয়ে আসে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Dashboard.jsx</span>
+      <span class="file-tag">BookMarksCard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+
+      <h3>🔑 State Variables</h3>
+      <ul>
+        <li><span class="inline-code">IsEditFormActive</span> — Edit modal দেখানো/লুকানো</li>
+        <li><span class="inline-code">editBookmarkData</span> — {id, title, description, url, tags} ধারণ করে</li>
+      </ul>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>কার্ডের 3-dot মেনু থেকে <strong>"Edit"</strong> ক্লিক</li>
+        <li>BookMarksCard → <span class="inline-code">handleEditBookmark(bookmarkObj)</span> কল করে</li>
+        <li>Dashboard-এ <span class="inline-code">handleEditBookmark()</span> ফাংশন:
+          <ul>
+            <li><span class="inline-code">setEditBookmarkData()</span> দিয়ে পুরানো ভ্যালু সেট করে</li>
+            <li><span class="inline-code">setIsEditFormActive(true)</span> দিয়ে Edit modal ওপেন করে</li>
+          </ul>
+        </li>
+        <li>Input fields pre-filled থাকে (value={editBookmarkData.title} ইত্যাদি)</li>
+        <li>ইউজার পরিবর্তন করলে <span class="inline-code">handleEditChange()</span> আপডেট করে</li>
+        <li>"Save Bookmark" → <span class="inline-code">UpdateBookmarkFunction(editBookmarkData, setBookmarks)</span></li>
+        <li>ফাংশন: <span class="inline-code">prev.map()</span> দিয়ে matching ID-র bookmark-এ নতুন ডাটা merge করে</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// Dashboard.jsx
+function handleEditBookmark(bookmark) {
+  setEditBookmarkData({
+    id: bookmark.id,
+    title: bookmark.title || "",
+    description: bookmark.description || "",
+    url: bookmark.url || "",
+    tags: Array.isArray(bookmark.tags) ? bookmark.tags : [],
+  });
+  setIsEditFormActive(true);
+}
+
+// bookmarkActions.js
+export function UpdateBookmarkFunction(editBookmarkData, setBookmarks) {
+  setBookmarks((prev) =>
+    prev.map((bookmark) => {
+      if (bookmark.id === editBookmarkData.id) {
+        return { ...bookmark, ...editBookmarkData };
+      }
+      return bookmark;
+    })
+  );
+}</code></pre>
+    </div>
+
+    <!-- 3. Delete Permanently -->
+    <div class="feature" id="f3">
+      <h2><span class="feature-number">3</span> Delete Bookmark Permanently</h2>
+      <p>শুধুমাত্র <strong>Archived</strong> বুকমার্কগুলো স্থায়ীভাবে মুছে ফেলা যায়।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>Archived কার্ডের মেনুতে <strong>"Delete Permanently"</strong> ক্লিক</li>
+        <li><span class="inline-code">DeleteBookmarkFunction(id, setBookmarks)</span> কল হয়</li>
+        <li>ফাংশন: <span class="inline-code">setBookmarks(prev => prev.filter(b => b.id !== key))</span></li>
+        <li>Bookmark তালিকা থেকে সম্পূর্ণরূপে সরিয়ে দেয় — আর ফেরানো যায় না</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>export function DeleteBookmarkFunction(key, setBookmarks) {
+  setBookmarks((prev) => prev.filter((bookmark) => bookmark.id !== key));
+}</code></pre>
+    </div>
+
+    <!-- 4. Pin / Unpin -->
+    <div class="feature" id="f4">
+      <h2><span class="feature-number">4</span> Pin / Unpin Bookmark</h2>
+      <p>Pinned বুকমার্কগুলো Home page-এ সবসময় ওপরে থাকে। Sort/Filter করলেও pin করা গুলো ওপরেই থাকবে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+      <span class="file-tag">Home.jsx</span>
+
+      <h3>🔑 State Property</h3>
+      <p>প্রতিটি bookmark object-এ <span class="inline-code">isPinned: true/false</span></p>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>Active কার্ডের মেনুতে <strong>"Pin"</strong> বা <strong>"Unpin"</strong> ক্লিক</li>
+        <li><span class="inline-code">pinbookmarksfunction(id, bookmarks, setBookmarks)</span> কল হয়</li>
+        <li>ফাংশন: <span class="inline-code">bookmark.isPinned</span> toggle করে (<span class="inline-code">!bookmark.isPinned</span>)</li>
+        <li>Home.jsx-এ rendering:
+          <ul>
+            <li><span class="inline-code">pinnedBookmarks</span> = isPinned === true গুলো আলাদা</li>
+            <li><span class="inline-code">unpinnedBookmarks</span> = বাকিগুলো sort হয়</li>
+            <li><span class="inline-code">displayBookmarks = [...pinnedBookmarks, ...sortedUnpinnedBookmarks]</span></li>
+          </ul>
+        </li>
+        <li>কার্ডের নিচে 📌 আইকন দেখায় (isPinned হলে)</li>
+        <li>⚠️ Archived কার্ডে Pin অপশন hidden থাকে</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// bookmarkActions.js
+export function pinbookmarksfunction(key, bookmarks, setBookmarks) {
+  const updatedBookmarks = bookmarks.map((bookmark) => {
+    if (bookmark.id === key) {
+      return { ...bookmark, isPinned: !bookmark.isPinned };
+    }
+    return bookmark;
+  });
+  setBookmarks(updatedBookmarks);
+}
+
+// Home.jsx — Pin-first ordering
+const displayBookmarks = [...pinnedBookmarks, ...sortedUnpinnedBookmarks];</code></pre>
+    </div>
+
+    <!-- 5. Archive / Unarchive -->
+    <div class="feature" id="f5">
+      <h2><span class="feature-number">5</span> Archive / Unarchive Bookmark</h2>
+      <p>Archive করলে বুকমার্ক Home থেকে সরে Archived ট্যাবে যায়। Unarchive করলে আবার Home-এ ফিরে আসে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+      <span class="file-tag">Home.jsx</span>
+      <span class="file-tag">ArchivedBookmarks.jsx</span>
+
+      <h3>🔑 State Property</h3>
+      <p>প্রতিটি bookmark object-এ <span class="inline-code">isArchived: true/false</span></p>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>Active কার্ডে <strong>"Archive"</strong> ক্লিক → <span class="inline-code">isArchived = true</span></li>
+        <li>Archived কার্ডে <strong>"Unarchive"</strong> ক্লিক → <span class="inline-code">isArchived = false</span></li>
+        <li>Home.jsx: <span class="inline-code">bookmarks.filter(b => !b.isArchived)</span> — শুধু active গুলো দেখায়</li>
+        <li>ArchivedBookmarks.jsx: <span class="inline-code">bookmarks.filter(b => b.isArchived)</span> — শুধু archived গুলো দেখায়</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>export function Archivedbookmarksfunction(key, bookmarks, setBookmarks) {
+  const updatedBookmarks = bookmarks.map((bookmark) => {
+    if (bookmark.id === key) {
+      return { ...bookmark, isArchived: !bookmark.isArchived };
+    }
+    return bookmark;
+  });
+  setBookmarks(updatedBookmarks);
+}</code></pre>
+    </div>
+
+    <!-- 6. Visit -->
+    <div class="feature" id="f6">
+      <h2><span class="feature-number">6</span> Visit Bookmark (URL Open)</h2>
+      <p>বুকমার্কের URL নতুন ট্যাবে খোলে এবং view count ও last visited date আপডেট করে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>কার্ডের মেনু থেকে <strong>"Visit"</strong> ক্লিক</li>
+        <li><span class="inline-code">VisitBookmarkUrl(id, bookmarks, setBookmarks)</span> কল হয়</li>
+        <li>ফাংশন:
+          <ul>
+            <li><span class="inline-code">views += 1</span> — ভিজিট কাউন্ট বাড়ায়</li>
+            <li><span class="inline-code">cardLVDate</span> — আজকের তারিখ সেট করে</li>
+            <li>URL-এ http না থাকলে <span class="inline-code">https://</span> যোগ করে</li>
+            <li><span class="inline-code">window.open(url, "_blank")</span> — নতুন ট্যাবে খোলে</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>export function VisitBookmarkUrl(key, bookmarks, setBookmarks) {
+  for (let i = 0; i < bookmarks.length; i++) {
+    if (bookmarks[i].id === key) {
+      let viewupdate = (bookmarks[i].views += 1);
+      setBookmarks((prev) => {
+        const updatedBookmarks = prev.map((bookmark) => {
+          if (bookmark.id === key) {
+            return {
+              ...bookmark,
+              views: viewupdate,
+              cardLVDate: new Date().toLocaleDateString("en-GB", {
+                day: "2-digit", month: "short", year: "numeric",
+              }),
+            };
+          }
+          return bookmark;
+        });
+        return updatedBookmarks;
+      });
+      const url = bookmarks[i].url.startsWith("http")
+        ? bookmarks[i].url : `https://${bookmarks[i].url}`;
+      window.open(url, "_blank");
+      return;
+    }
+  }
+}</code></pre>
+    </div>
+
+    <!-- 7. Copy URL -->
+    <div class="feature" id="f7">
+      <h2><span class="feature-number">7</span> Copy URL</h2>
+      <p>বুকমার্কের URL ক্লিপবোর্ডে কপি করে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+      <span class="file-tag">bookmarkActions.js</span>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>কার্ডের মেনু থেকে <strong>"Copy URL"</strong> ক্লিক</li>
+        <li><span class="inline-code">CopyBookmarkUrl(id, bookmarks)</span> কল হয়</li>
+        <li>ID দিয়ে bookmark খুঁজে URL বের করে</li>
+        <li><span class="inline-code">navigator.clipboard.writeText(url)</span> — ক্লিপবোর্ডে কপি</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>export function CopyBookmarkUrl(key, bookmarks) {
+  const bookmark = bookmarks.find((item) => item.id === key);
+  if (!bookmark) return;
+  const url = bookmark.url.startsWith("http")
+    ? bookmark.url : `https://${bookmark.url}`;
+  navigator.clipboard.writeText(url);
+}</code></pre>
+    </div>
+
+    <div class="section-divider">— Search, Sort & Filter —</div>
+
+    <!-- 8. Search -->
+    <div class="feature" id="f8">
+      <h2><span class="feature-number">8</span> Search by Title</h2>
+      <p>Header-এর সার্চ বারে টাইপ করলে বুকমার্কগুলো title অনুযায়ী ফিল্টার হয়। মূল bookmarks array কখনো change হয় না।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Dashboard.jsx</span>
+      <span class="file-tag">MainSection.jsx</span>
+      <span class="file-tag">Header.jsx</span>
+      <span class="file-tag">Home.jsx</span>
+      <span class="file-tag">ArchivedBookmarks.jsx</span>
+
+      <h3>🔑 State</h3>
+      <p><span class="inline-code">searchText</span> — Dashboard-এ রাখা হয়েছে (string, default: "")</p>
+
+      <h3>🔄 Data Flow</h3>
+      <div class="flow">
+        <span class="flow-step">Header Input</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">setSearchText()</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Dashboard state</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">searchText prop</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Home / Archived</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">.filter(matchesSearch)</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Render</span>
+      </div>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// Header.jsx — controlled input
+&lt;input
+  value={searchText}
+  onChange={(e) => setSearchText(e.target.value)}
+  placeholder="Search by title..."
+/&gt;
+
+// Home.jsx — filter function
+const matchesSearch = (b) => {
+  if (!searchText) return true;
+  return b.title?.toLowerCase().includes(searchText.toLowerCase());
+};
+
+const activeBookmarks = bookmarks.filter(
+  (b) => !b.isArchived && matchesSelectedTags(b) && matchesSearch(b)
+);</code></pre>
+    </div>
+
+    <!-- 9. Sort By -->
+    <div class="feature" id="f9">
+      <h2><span class="feature-number">9</span> Sort By (Filter Dropdown)</h2>
+      <p>৩টি সর্টিং অপশন আছে। Pinned bookmarks সর্ট থেকে exempt — সবসময় ওপরে থাকে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Home.jsx</span>
+      <span class="file-tag">ArchivedBookmarks.jsx</span>
+
+      <h3>🔑 State</h3>
+      <p><span class="inline-code">sortBy</span> — Home ও Archived-এ local state (default: "Recent added")</p>
+
+      <h3>⚙️ ৩টি Sort অপশন</h3>
+      <ul>
+        <li><strong>Recent added</strong> — ID অনুযায়ী নতুন থেকে পুরানো (<span class="inline-code">b.id - a.id</span>)</li>
+        <li><strong>Recently visited</strong> — Last visited date অনুযায়ী (<span class="inline-code">cardLVDate</span>)</li>
+        <li><strong>Most visited</strong> — সবচেয়ে বেশি ভিজিট করা (<span class="inline-code">b.views - a.views</span>)</li>
+      </ul>
+
+      <h3>⚙️ Pin Exemption Logic</h3>
+      <pre><code>// Home.jsx
+const pinnedBookmarks = activeBookmarks.filter((b) => b.isPinned);
+const unpinnedBookmarks = activeBookmarks.filter((b) => !b.isPinned);
+
+// শুধু unpinned গুলো sort হয়
+const sortedUnpinnedBookmarks = [...unpinnedBookmarks].sort((a, b) => {
+  if (sortBy === "Recent added") return (b.id || 0) - (a.id || 0);
+  if (sortBy === "Recently visited") { /* date comparison */ }
+  if (sortBy === "Most visited") return (b.views || 0) - (a.views || 0);
+});
+
+// Pinned আগে, তারপর sorted unpinned
+const displayBookmarks = [...pinnedBookmarks, ...sortedUnpinnedBookmarks];</code></pre>
+    </div>
+
+    <!-- 10. Tag Filter -->
+    <div class="feature" id="f10">
+      <h2><span class="feature-number">10</span> Filter by Tags (Sidebar Checkboxes)</h2>
+      <p>Left sidebar-এ ট্যাগ চেকবাক্সে ক্লিক করলে সেই ট্যাগ যুক্ত বুকমার্কগুলো ফিল্টার হয়ে দেখায়। একাধিক ট্যাগ সিলেক্ট করা যায়।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Dashboard.jsx</span>
+      <span class="file-tag">leftSidebar.jsx</span>
+      <span class="file-tag">Home.jsx</span>
+      <span class="file-tag">ArchivedBookmarks.jsx</span>
+
+      <h3>🔑 State</h3>
+      <p><span class="inline-code">selectedTags</span> — Dashboard-এ array (default: [])</p>
+
+      <h3>🔄 Data Flow</h3>
+      <div class="flow">
+        <span class="flow-step">Sidebar Checkbox</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">handleTagToggle(tagName)</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">selectedTags updates</span>
+        <span class="flow-arrow">→</span>
+        <span class="flow-step">Home/Archived re-filter</span>
+      </div>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>চেকবাক্স ক্লিক → <span class="inline-code">handleTagToggle("JavaScript")</span></li>
+        <li>আগে থেকে selected থাকলে remove করে, না থাকলে add করে</li>
+        <li>Home.jsx / ArchivedBookmarks.jsx-এ <span class="inline-code">matchesSelectedTags()</span> ফাংশন:
+          <ul>
+            <li>selectedTags খালি হলে সব দেখায়</li>
+            <li>না হলে bookmark.tags-এ কোনো একটি selected tag match করলে দেখায়</li>
+          </ul>
+        </li>
+        <li>Pinned bookmarks-ও ফিল্টার হয় — match করলে ওপরে দেখায়, না করলে লুকায়</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// Dashboard.jsx
+function handleTagToggle(tagName) {
+  setSelectedTags((prev) =>
+    prev.includes(tagName)
+      ? prev.filter((t) => t.toLowerCase() !== tagName.toLowerCase())
+      : [...prev, tagName]
+  );
+}
+
+// Home.jsx
+const matchesSelectedTags = (b) => {
+  if (!selectedTags || selectedTags.length === 0) return true;
+  return b.tags?.some((tag) =>
+    selectedTags.some((s) => s.toLowerCase() === tag.toLowerCase())
+  );
+};
+
+// leftSidebar.jsx — checkbox
+&lt;input
+  type="checkbox"
+  checked={selectedTags.some(t => t.toLowerCase() === item.name.toLowerCase())}
+  onChange={() => handleTagToggle(item.name)}
+/&gt;</code></pre>
+    </div>
+
+    <!-- 11. Dynamic Tag Count -->
+    <div class="feature" id="f11">
+      <h2><span class="feature-number">11</span> Dynamic Tag Count Badge</h2>
+      <p>Sidebar-এ প্রতিটি ট্যাগের পাশে সংখ্যা দেখায় — ওই ট্যাগ কতটি বুকমার্কে আছে। বুকমার্ক যোগ/মুছলে সংখ্যা real-time আপডেট হয়।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Dashboard.jsx</span>
+      <span class="file-tag">leftSidebar.jsx</span>
+      <span class="file-tag">data.js</span>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li><span class="inline-code">data.js</span>-এ tags array-তে আগে static count: 0 থাকে</li>
+        <li>Dashboard.jsx-এ <span class="inline-code">dynamicTags</span> computed variable:
+          <ul>
+            <li>প্রতিটি tag-এর জন্য bookmarks array-তে কতগুলো bookmark ওই tag ধারণ করে গুনে count সেট করে</li>
+          </ul>
+        </li>
+        <li><span class="inline-code">dynamicTags</span> array LeftSidebar-এ <span class="inline-code">tagsList</span> prop হিসেবে পাঠানো হয়</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// Dashboard.jsx
+const dynamicTags = tags.map((tag) => {
+  const count = bookmarks.filter((b) =>
+    b.tags?.some((t) => t.toLowerCase() === tag.name.toLowerCase())
+  ).length;
+  return { ...tag, count };
+});</code></pre>
+    </div>
+
+    <div class="section-divider">— UI & Theme —</div>
+
+    <!-- 12. Dark Mode -->
+    <div class="feature" id="f12">
+      <h2><span class="feature-number">12</span> Dark Mode / Light Mode</h2>
+      <p>Theme toggle করলে পুরো অ্যাপের রঙ পাল্টায়। LocalStorage-তে সেভ হয় — রিলোড করলেও theme ধরে রাখে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">App.jsx</span>
+      <span class="file-tag">Header.jsx</span>
+      <span class="file-tag">index.css</span>
+
+      <h3>🔑 State</h3>
+      <p><span class="inline-code">darkMode</span> — App.jsx-এ boolean state, localStorage থেকে initialize হয়</p>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>App.jsx-এ <span class="inline-code">darkMode</span> state — <span class="inline-code">localStorage.getItem("theme")</span> থেকে পড়ে</li>
+        <li><span class="inline-code">useEffect</span>-এ <span class="inline-code">document.documentElement.classList.add/remove("dark")</span></li>
+        <li>Header-এ ☀️ (Light) ও 🌙 (Dark) বাটন — ক্লিক করলে <span class="inline-code">setDarkMode(!darkMode)</span></li>
+        <li>index.css-এ <span class="inline-code">@custom-variant dark (&:where(.dark, .dark *))</span> — Tailwind v4 dark mode</li>
+        <li>সব কম্পোনেন্টে <span class="inline-code">dark:</span> prefix দিয়ে dark variant styling আছে</li>
+      </ol>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// App.jsx
+const [darkMode, setDarkMode] = useState(() => {
+  return localStorage.getItem("theme") === "dark";
+});
+
+useEffect(() => {
+  const root = document.documentElement;
+  if (darkMode) {
+    root.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    root.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+}, [darkMode]);</code></pre>
+    </div>
+
+    <!-- 13. Home vs Archived -->
+    <div class="feature" id="f13">
+      <h2><span class="feature-number">13</span> Home vs Archived Navigation</h2>
+      <p>Left sidebar-এ Home ও Archived ট্যাবে ক্লিক করে দুটি ভিউ-এর মধ্যে switch করা যায়।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">Dashboard.jsx</span>
+      <span class="file-tag">leftSidebar.jsx</span>
+      <span class="file-tag">MainSection.jsx</span>
+
+      <h3>🔑 State</h3>
+      <p><span class="inline-code">IsHomeActive</span> — boolean (default: true)</p>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>Sidebar-এ "Home" ক্লিক → <span class="inline-code">setIsHomeActive(true)</span></li>
+        <li>Sidebar-এ "Archived" ক্লিক → <span class="inline-code">setIsHomeActive(false)</span></li>
+        <li>MainSection.jsx-এ conditional rendering:</li>
+      </ol>
+      <pre><code>{HomeActive ? (
+  &lt;Home ... /&gt;
+) : (
+  &lt;ArchivedBookmarks ... /&gt;
+)}</code></pre>
+      <p>Active ট্যাবে background highlight (<span class="inline-code">bg-[var(--n-l-100)]</span>) দেখায়।</p>
+    </div>
+
+    <!-- 14. Responsive Sidebar -->
+    <div class="feature" id="f14">
+      <h2><span class="feature-number">14</span> Responsive Sidebar (Mobile Menu)</h2>
+      <p>Desktop-এ sidebar সবসময় দেখায়। Mobile/Tablet-এ hamburger menu ☰ ক্লিক করলে sidebar slide করে আসে।</p>
+
+      <h3>📁 জড়িত ফাইলসমূহ</h3>
+      <span class="file-tag">leftSidebar.jsx</span>
+      <span class="file-tag">Header.jsx</span>
+
+      <h3>🔑 State</h3>
+      <p><span class="inline-code">IsMenuOpen</span> — boolean (default: false)</p>
+
+      <h3>⚙️ কিভাবে কাজ করে</h3>
+      <ol>
+        <li>Header-এ ☰ বাটন (mobile/tablet-এ দেখায়) → <span class="inline-code">setMenuOpen(true)</span></li>
+        <li>Sidebar ক্লাস toggle হয়:
+          <ul>
+            <li>Open: <span class="inline-code">absolute flex z-50 left-0 w-full h-full</span></li>
+            <li>Closed: <span class="inline-code">mobile:hidden tablet:hidden desktop:flex</span></li>
+          </ul>
+        </li>
+        <li>Sidebar-এ ✕ বাটন বা backdrop ক্লিক → <span class="inline-code">setMenuOpen(false)</span></li>
+        <li>Backdrop: <span class="inline-code">bg-[#131313B2]</span> — semi-transparent overlay</li>
+      </ol>
+    </div>
+
+    <!-- 15. Card Layout -->
+    <div class="feature" id="f15">
+      <h2><span class="feature-number">15</span> Bookmark Card Layout</h2>
+      <p>প্রতিটি বুকমার্ক কার্ডে যা যা দেখায়:</p>
+
+      <h3>📁 জড়িত ফাইল</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+
+      <h3>🎨 কার্ড Structure</h3>
+      <pre><code>┌─────────────────────────────────────┐
+│  [Favicon]  Title          [⋮ Menu] │  ← Header
+│             url.com                  │
+│─────────────────────────────────────│
+│  Description text...                 │  ← Body
+│  [Tag1] [Tag2] [Tag3]               │  ← Tags
+│─────────────────────────────────────│
+│  👁 47  🕐 15 Jan  📅 23 Sep   📌  │  ← Footer
+└─────────────────────────────────────┘</code></pre>
+
+      <h3>📊 Footer Data</h3>
+      <ul>
+        <li>👁 <strong>Views</strong> — <span class="inline-code">cardViews</span> (Visit করলে বাড়ে)</li>
+        <li>🕐 <strong>Created At</strong> — <span class="inline-code">cardCDate</span></li>
+        <li>📅 <strong>Last Visited</strong> — <span class="inline-code">cardLVDate</span></li>
+        <li>📌 <strong>Pin Icon</strong> — <span class="inline-code">isPinned</span> হলে দেখায়</li>
+      </ul>
+
+      <h3>🖼️ Favicon</h3>
+      <pre><code>const getFavicon = (url) => {
+  const domain = new URL(`https://${url}`).hostname;
+  return `https://www.google.com/s2/favicons?domain=${domain}`;
+};</code></pre>
+    </div>
+
+    <!-- 16. Conditional Menu -->
+    <div class="feature" id="f16">
+      <h2><span class="feature-number">16</span> Conditional Menu (Active vs Archived)</h2>
+      <p>কার্ডের 3-dot মেনু <span class="inline-code">isArchived</span> অনুযায়ী ভিন্ন ভিন্ন অপশন দেখায়।</p>
+
+      <h3>📁 জড়িত ফাইল</h3>
+      <span class="file-tag">BookMarksCard.jsx</span>
+
+      <h3>🔄 Active কার্ড (isArchived === false)</h3>
+      <pre><code>1. Visit          (bi-box-arrow-up-right)
+2. Copy URL       (bi-link-45deg)
+3. Pin / Unpin    (bi-pin-angle / bi-pin-fill)
+4. Edit           (bi-pencil)
+5. Archive        (bi-archive)</code></pre>
+
+      <h3>🔄 Archived কার্ড (isArchived === true)</h3>
+      <pre><code>1. Visit              (bi-box-arrow-up-right)
+2. Copy URL           (bi-link-45deg)
+3. Unarchive          (bi-arrow-counterclockwise)
+4. Delete Permanently (bi-trash)</code></pre>
+
+      <h3>💻 মূল কোড</h3>
+      <pre><code>// BookMarksCard.jsx
+{isArchived ? (
+  &lt;&gt;
+    {/* Unarchive */}
+    {/* Delete Permanently */}
+  &lt;/&gt;
+) : (
+  &lt;&gt;
+    {/* Pin / Unpin */}
+    {/* Edit */}
+    {/* Archive */}
+  &lt;/&gt;
+)}</code></pre>
+    </div>
+
+    <!-- Summary -->
+    <div class="feature" style="border-color: var(--accent2); margin-top: 48px;">
+      <h2>📊 Summary — State Architecture</h2>
+      <p>সব গুরুত্বপূর্ণ state <strong>Dashboard.jsx</strong>-এ centralized:</p>
+      <pre><code>Dashboard.jsx (Single Source of Truth)
+├── bookmarks          → পুরো bookmark array
+├── IsFormActive       → Add modal toggle
+├── IsEditFormActive   → Edit modal toggle
+├── bookmarkData       → নতুন bookmark form data
+├── editBookmarkData   → edit form data (pre-filled)
+├── selectedTags       → sidebar tag filter array
+├── searchText         → header search input value
+├── IsHomeActive       → Home vs Archived tab
+├── IsMenuOpen         → Mobile sidebar toggle
+├── darkMode           → Theme (App.jsx থেকে prop)
+│
+├─→ LeftSidebar (tagsList, selectedTags, handleTagToggle)
+├─→ MainSection
+│   ├─→ Header (searchText, setSearchText, darkMode)
+│   ├─→ Home (bookmarks, selectedTags, searchText, sortBy)
+│   └─→ ArchivedBookmarks (bookmarks, selectedTags, searchText, sortBy)
+│
+└─→ BookMarksCard (per-card actions via bookmarkActions.js)</code></pre>
+    </div>
+
+    <p style="text-align: center; color: #8b949e; margin-top: 40px; font-size: 0.85rem;">
+      Generated for Bookmark Manager App • React 19 + Vite + Tailwind CSS v4
+    </p>
+  </div>
+</body>
+</html>
